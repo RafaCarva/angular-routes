@@ -1,0 +1,38 @@
+import { BookService } from './../../services/book.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { Book } from 'src/app/models/book';
+import { switchMap, tap } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-book-detail',
+  templateUrl: './book-detail.component.html',
+  styleUrls: ['./book-detail.component.css']
+})
+export class BookDetailComponent implements OnInit {
+
+  book$: Observable<Book> = null;
+  index: number;
+
+  constructor(
+    private route: ActivatedRoute,
+    private bookService: BookService,
+    private router: Router
+  ) { }
+
+  ngOnInit() {
+    console.log('Index: ', this.route.snapshot.paramMap.get('index'));
+    this.book$ = this.route.paramMap
+     // o '+'no  params é para transformar o valor em número.
+     .pipe(
+       tap((params: ParamMap) => this.index = +params.get('index')),
+       switchMap((params: ParamMap) => this.bookService.get( +params.get('index'))));
+  }
+
+  remove() {
+    this.bookService.remove(this.index);
+    this.router.navigate(['books']);
+  }
+
+}
