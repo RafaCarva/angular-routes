@@ -1,3 +1,4 @@
+import { BookAuthorsComponent } from './book/book-authors/book-authors.component';
 import { BookDetailComponent } from './book/book-detail/book-detail.component';
 import { DvdFormComponent } from './dvd/dvd-form/dvd-form.component';
 import { DvdDetailComponent } from './dvd/dvd-detail/dvd-detail.component';
@@ -12,10 +13,14 @@ const appRoutes: Routes = [
   { path: 'dvds', component: DvdComponent },
   { path: 'books', component: BookComponent,
     children: [
-      { path: ':index', component: BookDetailComponent },
+      { path: ':index', component: BookDetailComponent,
+        children: [
+          { path: 'authors', component: BookAuthorsComponent }
+        ]
+      },
     ]
-
   },
+  { path: 'eletronics', loadChildren: './eletronics/eletronics.module#EletronicsModule' },
   { path: 'dvds/new', component: DvdFormComponent },
   { path: 'dvds/:index', component: DvdDetailComponent },
   { path: '', pathMatch: 'full', redirectTo: 'dvds' },

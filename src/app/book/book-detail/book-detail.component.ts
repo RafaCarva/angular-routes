@@ -14,6 +14,7 @@ export class BookDetailComponent implements OnInit {
 
   book$: Observable<Book> = null;
   index: number;
+  authors: string[];
 
   constructor(
     private route: ActivatedRoute,
@@ -27,12 +28,20 @@ export class BookDetailComponent implements OnInit {
      // o '+'no  params é para transformar o valor em número.
      .pipe(
        tap((params: ParamMap) => this.index = +params.get('index')),
-       switchMap((params: ParamMap) => this.bookService.get( +params.get('index'))));
+       switchMap((params: ParamMap) => this.bookService.get( +params.get('index'))),
+       tap((b) => this.authors = (b) ? b.authors : []) // ' (b) ?' Se b existir, faça...
+
+      );
   }
 
   remove() {
     this.bookService.remove(this.index);
-    this.router.navigate(['books']);
+    this.router.navigateByUrl('books');
+  }
+
+  goAuthors() {
+    let url = '/books/' + this.index + '/authors';
+    this.router.navigate([url, {authors: this.authors}]);
   }
 
 }
